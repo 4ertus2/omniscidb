@@ -81,6 +81,8 @@ if(PREFER_STATIC_LIBS)
   if(CMAKE_SYSTEM_PROCESSOR STREQUAL "ppc64le")
     set(LOCALE_LINK_FLAG "-lstdc++")
   endif()
+
+  find_package(ICU COMPONENTS i18n uc data REQUIRED)
 else()
   add_definitions("-DBOOST_LOG_DYN_LINK")
 endif()
@@ -269,7 +271,7 @@ include_directories(${CMAKE_SOURCE_DIR}
 ## Dependencies
 
 # LLVM
-set(llvm_config_cmd llvm-config)
+set(llvm_config_cmd llvm-config-10)
 
 execute_process(COMMAND ${llvm_config_cmd} "--includedir" OUTPUT_VARIABLE LLVM_INC_FLAGS)
 execute_process(COMMAND ${llvm_config_cmd} "--libs" OUTPUT_VARIABLE LLVM_LIB_FLAGS)
@@ -641,7 +643,8 @@ add_custom_target(rerun_cmake ALL
   )
 add_dependencies(omnisci_server rerun_cmake)
 
-target_link_libraries(omnisci_server mapd_thrift thrift_handler ${MAPD_LIBRARIES} ${Boost_LIBRARIES} ${CMAKE_DL_LIBS} ${CUDA_LIBRARIES} ${PROFILER_LIBS} ${ZLIB_LIBRARIES} ${LOCALE_LINK_FLAG})
+target_link_libraries(omnisci_server mapd_thrift thrift_handler ${MAPD_LIBRARIES} ${Boost_LIBRARIES} ${CMAKE_DL_LIBS} ${CUDA_LIBRARIES}
+    ${PROFILER_LIBS} ${ZLIB_LIBRARIES} ${LOCALE_LINK_FLAG} ${ICU_LIBRARIES})
 
 target_link_libraries(initdb mapd_thrift DataMgr ${MAPD_LIBRARIES} ${Boost_LIBRARIES} ${CMAKE_DL_LIBS} ${CUDA_LIBRARIES} ${ZLIB_LIBRARIES})
 
